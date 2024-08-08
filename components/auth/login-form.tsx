@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
@@ -18,31 +19,34 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useRegister } from "@/hooks/auth/use-register";
-import { registerSchema, registerSchemaType } from "@/lib/schemas/auth";
+import { loginSchema, loginSchemaType } from "@/lib/schemas/auth";
 
-const RegisterForm = () => {
+const LoginForm = () => {
   const router = useRouter();
-  const { mutate, isPending } = useRegister();
-  const form = useForm<registerSchemaType>({
-    resolver: zodResolver(registerSchema),
+  const [isPending, setIsPending] = useState<boolean>(false);
+  const form = useForm<loginSchemaType>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
-      name: "",
       email: "",
       password: "",
     },
   });
 
-  const handleRegister = async (values: registerSchemaType) =>
-    mutate(values, {
-      onSuccess: (res) => {
-        toast.success(res.data.message);
-        router.push("/login");
-      },
-      onError: (err: any) => {
-        toast.error(err?.response?.data?.message || "Something went wrong!!");
-      },
+  const handleLogin = async (values: loginSchemaType) => {
+    setIsPending(true);
+    await signIn("credentials", { ...values, redirect: false }).then((res) => {
+      setIsPending(false);
+      if (!res) {
+        toast.error("Something went wrong!!");
+        return;
+      }
+      if (res.error) {
+        toast.error((res.code as string) || "Something went wrong!!");
+        return;
+      }
+      router.push("/");
     });
+  };
 
   const handleGoogle = async () => await signIn("google");
 
@@ -50,21 +54,7 @@ const RegisterForm = () => {
     <Card className="mx-auto mt-4 w-full max-w-md">
       <CardContent className="mt-8">
         <Form {...form}>
-          <form
-            className="space-y-6"
-            onSubmit={form.handleSubmit(handleRegister)}
-          >
-            <FormField
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name*</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-              name="name"
-            />
+          <form className="space-y-6" onSubmit={form.handleSubmit(handleLogin)}>
             <FormField
               render={({ field }) => (
                 <FormItem>
@@ -79,7 +69,12 @@ const RegisterForm = () => {
             <FormField
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password*</FormLabel>
+                  <FormLabel className="flex justify-between gap-2">
+                    <span>Password*</span>
+                    <Link className="text-primary" href="/forgot-password">
+                      Forgot Password?
+                    </Link>
+                  </FormLabel>
                   <FormControl>
                     <Input type="password" {...field} />
                   </FormControl>
@@ -87,20 +82,9 @@ const RegisterForm = () => {
               )}
               name="password"
             />
-            <p className="text-center text-sm">
-              By signing up, I agree to the{" "}
-              <Link className="underline" href="/privacy-policy">
-                Privacy Policy
-              </Link>{" "}
-              and{" "}
-              <Link className="underline" href="/terms-of-service">
-                Terms of Service
-              </Link>
-              .
-            </p>
             <Button className="w-full">
               {isPending && <LuLoader className="mr-2 h-5 w-5 animate-spin" />}
-              <span>Sign Up</span>
+              <span>Sign In</span>
             </Button>
             <Button
               className="w-full gap-2"
@@ -108,12 +92,12 @@ const RegisterForm = () => {
               onClick={handleGoogle}
             >
               <FcGoogle className="h-6 w-6" />
-              <span>Sign up with Google</span>
+              <span>Sign in with Google</span>
             </Button>
             <p className="text-center">
-              Already have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link className="font-medium text-primary" href="/login">
-                Sign In
+                Sign Up
               </Link>
             </p>
           </form>
@@ -123,4 +107,4 @@ const RegisterForm = () => {
   );
 };
 
-export default RegisterForm;
+export default LoginForm;

@@ -3,9 +3,9 @@ import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 import { EmailVerification } from "@/emails/email-verification";
 import { env } from "@/env.mjs";
-import { registerSchemaType } from "@/hooks/auth/use-register";
 import { db } from "@/lib/db";
 import { resend } from "@/lib/resend";
+import { registerSchemaType } from "@/lib/schemas/auth";
 
 export const POST = async (req: NextRequest) => {
   const data: registerSchemaType = await req.json();
