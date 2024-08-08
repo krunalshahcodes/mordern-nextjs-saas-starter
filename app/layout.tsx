@@ -34,7 +34,7 @@ const fontSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Indie Pair",
+  title: "Mordern Nextjs SaaS Starter",
 };
 
 export default async function RootLayout({
