@@ -82,12 +82,13 @@ const LoginForm = () => {
               )}
               name="password"
             />
-            <Button className="w-full">
+            <Button className="w-full" type="submit">
               {isPending && <LuLoader className="mr-2 h-5 w-5 animate-spin" />}
               <span>Sign In</span>
             </Button>
             <Button
               className="w-full gap-2"
+              type="button"
               variant="outline"
               onClick={handleGoogle}
             >
