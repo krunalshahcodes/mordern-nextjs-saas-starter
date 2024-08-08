@@ -1,3 +1,4 @@
+import { TokenType } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
@@ -43,6 +44,7 @@ export const POST = async (req: NextRequest) => {
     data: {
       identifier: user.id,
       token,
+      type: TokenType.EMAIL_VERIFICATION,
     },
   });
 
@@ -53,5 +55,5 @@ export const POST = async (req: NextRequest) => {
     react: EmailVerification({ name: user.name, token }),
   });
 
-  return NextResponse.json({ message: "Success", data });
+  return NextResponse.json({ message: "Success" });
 };

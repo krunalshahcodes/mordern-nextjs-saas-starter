@@ -49,11 +49,16 @@ model User {
   @@map("users")
 }
 
+enum TokenType {
+  EMAIL_VERIFICATION
+  RESET_PASSWORD
+}
+
 model VerificationToken {
   identifier String
-  token      String
+  token      String    @unique
   expires    DateTime?
+  type       TokenType
 
-  @@unique([identifier, token])
   @@map("verification_tokens")
 }
