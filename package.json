@@ -32,8 +32,11 @@
     "@t3-oss/env-nextjs": "^0.11.0",
     "@tanstack/react-query": "^5.51.21",
     "@tanstack/react-query-devtools": "^5.51.21",
+    "axios": "^1.7.3",
+    "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "nanoid": "^5.0.7",
     "next": "14.2.5",
     "next-auth": "5.0.0-beta.20",
     "react": "^18",
@@ -48,6 +51,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
